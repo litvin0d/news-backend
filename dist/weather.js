@@ -12,34 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const weather_1 = __importDefault(require("./weather"));
-const app = (0, express_1.default)();
-const PORT = process.env.PORT || 3000;
-app.use(express_1.default.json());
-app.get("/", (req, res) => {
-    res.send("news-backend");
-});
-app.get("/weather", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const axios_1 = __importDefault(require("axios"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const fetchWeather = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield (0, weather_1.default)();
-        if (result.success) {
-            res.status(200).json(result);
-        }
-        else {
-            res.status(502).json(result);
-        }
+        const url = `https://api.weather.yandex.ru/v2/forecast?lat=55.159902&lon=61.402554&lang=ru_RU&limit=1`;
+        const result = yield axios_1.default.get(url, { headers: { "X-Yandex-API-Key": `${process.env.YANDEX_WEATHER_API_KEY}` } });
+        return {
+            success: true,
+            temp: result.data.fact.temp,
+            icon: result.data.fact.icon,
+            condition: result.data.fact.condition,
+        };
     }
     catch (e) {
-        console.error(e);
-        res.status(500).json({
+        console.error("fetchWeather error: " + e);
+        return {
             success: false,
-            message: "Internal Server Error",
-        });
+            message: "Weather data not available",
+        };
     }
-}));
-// запуск сервера
-const server = app.listen(PORT, () => {
-    console.log(`Server started at port ${PORT}! Pid: ${process.pid}`);
 });
-server.on("error", e => console.log("Error:" + e));
+exports.default = fetchWeather;
