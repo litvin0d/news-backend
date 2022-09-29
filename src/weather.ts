@@ -1,24 +1,26 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import dotenv from "dotenv";
+
+import { IError, IWeather } from "./@types/models";
 
 dotenv.config();
 
 const fetchWeather = async () => {
     try {
-        const url = `https://api.weather.yandex.ru/v2/forecast?lat=55.159902&lon=61.402554&lang=ru_RU&limit=1`;
-        const result = await axios.get(url, { headers: { "X-Yandex-API-Key": `${process.env.YANDEX_WEATHER_API_KEY}` } });
+        const url: string = "https://api.weather.yandex.ru/v2/forecast?lat=55.159902&lon=61.402554&lang=ru_RU&limit=3";
+        const result: AxiosResponse = await axios.get(url, { headers: { "X-Yandex-API-Key": `${process.env.YANDEX_WEATHER_API_KEY}` } });
         return {
-            success: true as boolean,
-            temp: result.data.fact.temp as number,
-            icon: result.data.fact.icon as string,
-            condition: result.data.fact.condition as string,
-        };
+            success: true,
+            temp: result.data.fact.temp,
+            icon: result.data.fact.icon,
+            condition: result.data.fact.condition,
+        } as IWeather;
     } catch (e) {
         console.error("fetchWeather error: " + e);
         return {
-            success: false as boolean,
-            message: "Weather data not available" as string,
-        }
+            success: false,
+            message: "Weather data not available",
+        } as IError;
     }
 };
 

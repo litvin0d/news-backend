@@ -17,7 +17,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const fetchWeather = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const url = `https://api.weather.yandex.ru/v2/forecast?lat=55.159902&lon=61.402554&lang=ru_RU&limit=1`;
+        const url = "https://api.weather.yandex.ru/v2/forecast?lat=55.159902&lon=61.402554&lang=ru_RU&limit=3";
         const result = yield axios_1.default.get(url, { headers: { "X-Yandex-API-Key": `${process.env.YANDEX_WEATHER_API_KEY}` } });
         return {
             success: true,
