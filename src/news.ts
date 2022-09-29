@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer, { Browser, Page } from "puppeteer";
 import userAgent from "user-agents";
 
 import { IArticle, IError, INews } from "./@types/models";
@@ -6,7 +6,7 @@ import { IArticle, IError, INews } from "./@types/models";
 const fetchNews = async () => {
     try {
         // запуск браузера
-        const browser: puppeteer.Browser = await puppeteer.launch({
+        const browser: Browser = await puppeteer.launch({
             headless: true,
             args: [
                 "--no-sandbox",
@@ -16,9 +16,9 @@ const fetchNews = async () => {
         });
 
         // создание новой страницы
-        const page: puppeteer.Page = await browser.newPage();
+        const page: Page = await browser.newPage();
         // рандомизация user-agent во избежание блокировки доступа
-        await page.setUserAgent(userAgent.toString());
+        await page.setUserAgent(userAgent.toString() as string);
         // переход на страницу по url
         await page.goto("https://74.ru/text/", { waitUntil: "networkidle2" });
 
